@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     public PlayerHealth Player;						      //A reference to the player's health script which will be considered "the player"
     public Transform ZombieTarget;                        //The object that zombies are chasing. This needs to be separate from the player because the game manager
                                                           //can make zombies chase something that isn't the player (as is the case with allies)
+    public GameObject Boss;                                // This is the infection that keep infecting the plushies
 
     [Header("Healing Beam Properties")]
     [Range(10, 30)]
