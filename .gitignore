@@ -17,6 +17,13 @@
 # Recordings can get excessive in size
 /[Rr]ecordings/
 
+# Imported Assets can get excessive in size
+/Assets/[Ii]mported[Aa]ssets/
+
+# Allow a .gitkeep file in the "Imported Assets" folder to keep the folder itself in Git
+!/Assets/[Ii]mported[Aa]ssets/.gitkeep
+
+
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
 
@@ -47,6 +54,10 @@ ExportedObj/
 *.opendb
 *.VC.db
 
+# Uncompressed Texture Files
+*.tif
+*.tiff
+
 # Unity3D generated meta files
 *.pidb.meta
 *.pdb.meta
@@ -71,5 +82,17 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# --- Operating System Files --- 
+# macOS 
+.DS_Store 
+.DS_Store? 
+._* 
+.Spotlight-V100 
+.Trashes Icon? 
+ehthumbs.db 
 
+# Windows 
+Thumbs.db 
+Thumbs.db:encryptable 
+desktop.ini
 
