@@ -227,6 +227,6 @@ public class PlayerOrbOptions : MonoBehaviour
 
 	void SetIfPlushizer(string name)
 	{
-		setToPlushizer = name.Equals("PlushizeController") ? true : false;
+		setToPlushizer = "PlushizeController".Equals(name);
 	}
 }
