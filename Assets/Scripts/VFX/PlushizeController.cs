@@ -37,7 +37,7 @@ public class PlushizeController : MonoBehaviour
 			//...if the script exists...
 			if (zombieHealth != null)
 			{
-				//...tell the enemy to take damage
+				//...tell the zombie to improve health
 				zombieHealth.ImproveHealth(this.name);
 			}
 		}

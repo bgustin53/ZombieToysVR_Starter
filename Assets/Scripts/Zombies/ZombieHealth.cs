@@ -96,7 +96,7 @@ public class ZombieHealth : MonoBehaviour
 		transform.Translate(-Vector3.up * sinkSpeed * Time.deltaTime);
 	}
 
-	//This method is called whenever the zombie is hit with a healing or plushizing beam
+	//This method is called by a VFX whenever the zombie is hit with a healing or plushizing beam
 	public void ImproveHealth(string typeOfBeam)
     {
 		switch (typeOfBeam)
