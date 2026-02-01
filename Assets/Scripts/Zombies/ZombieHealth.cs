@@ -105,7 +105,7 @@ public class ZombieHealth : MonoBehaviour
 				ImproveHealth(GameManager.Instance.healingFromHealingBeam);
 				break;
 			case "Plushize_Indicator":
-				if (lastCycleOfLastZombieCured && GameManager.Instance.Boss == null)
+				if (lastCycleOfLastZombieCured && GameManager.Instance.Infection == null)
 				{
 					willRelapse = false;
 					ImproveHealth(999);  //Value irrevelent, this will plushize this zombie

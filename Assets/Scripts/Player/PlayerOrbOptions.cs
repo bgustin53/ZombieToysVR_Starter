@@ -35,6 +35,7 @@ public class PlayerOrbOptions : MonoBehaviour
 	private float attackCooldown = 0f;                                //How long the player must wait before attacking again
 	private float timeOfLastAttack = 0f;                              //The time when the player last attacked
 	private bool canLaunch = true;                                    //Whether or not the player can attack
+	public bool setToPlushizer {get; private set;}                       //Called by infection
 
     private void Awake()
     {
@@ -64,6 +65,7 @@ public class PlayerOrbOptions : MonoBehaviour
 		//Turn off all enabled attacks
 		DisableAttacks();
 		controllers[controllerIndex].gameObject.SetActive(true);
+		SetIfPlushizer(controllers[controllerIndex].GetType().Name);
 
 	}
 
@@ -221,5 +223,10 @@ public class PlayerOrbOptions : MonoBehaviour
 			controller.gameObject.SetActive(false);
         }
 
+	}
+
+	void SetIfPlushizer(string name)
+	{
+		setToPlushizer = name.Equals("PlushizeController") ? true : false;
 	}
 }
