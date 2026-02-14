@@ -17,10 +17,11 @@ public class XRRigMovement : MonoBehaviour
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private float speed = 6.75f;
+    [SerializeField] private float gravity = -9.81f;
 
     private Animator animator;
     private CharacterController characterController;
-    private float verticalSpeed;
+    
     private float yPos;
     private bool canMove = true;
 
@@ -58,11 +59,12 @@ public class XRRigMovement : MonoBehaviour
 
         Vector3 direction = (forward * input.y + right * input.x).normalized;
         Vector3 horizontalVelocity = direction * speed;
+        float verticalSpeed;   // Holds gravity, but only if the player is above the ground.
 
         // Handle vertical speed
         if (transform.position.y > yPos)
         {
-            verticalSpeed = -0.9f; // slight downward push
+            verticalSpeed = gravity;
         }
         else
         {
