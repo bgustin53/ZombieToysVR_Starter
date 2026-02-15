@@ -1,54 +1,69 @@
-﻿//This script handles the lightning attack. The lightning attack is an instant line attack that does a moderate
-//amount of damage with a small cooldown.
+﻿//This script handles spraying the plushizer ray. The plushizer ray is spreads a ray to hit the infection particle effect
+// and eliminate it over time.
 
 using UnityEngine;
 
 public class PlushizeController : MonoBehaviour
 {
-	[Header("VFX Specs")]
-	public float Cooldown = 1f;						//The cooldown of the attach
+    [Header("Settings")]
+    public float Cooldown = 1f;
+    [SerializeField] float range = 20.0f;
+    [SerializeField] LayerMask strikeableMask;  // This should be a blockable
 
-	[SerializeField] float range = 20.0f;           //How far the attack can shoot
-	[SerializeField] LayerMask strikeableMask; 		//Layermask that determines what the attack can hit
+    [Header("VFX References")]
+    [SerializeField] PlushizeBeam plushizeBeam; 
+    [SerializeField] AVPlayer plushizeHit;      
+    [SerializeField] ParticleSystem plushizeParticleSystem; // Added this missing reference
 
-	[Header("VFX References")]
-	[SerializeField] PlushizeBeam plushizeBeam;	//Reference to the lightningBolt script on the lightning bolt game object
-	[SerializeField] AVPlayer plushizeHit;			//Reference to the AVPlayer (Audio Visual Player) on the lightning hit game object
+    public void Fire()
+    {
+        // 1. Setup direction and points
+        Vector3 fireDirection = transform.forward;
+        Vector3 maxRangePoint = transform.position + (fireDirection * range);
 
-	//Called from PlayerOrbOptions script
-	public void Fire()
-	{
-		//Create a ray from the current position and extending straight forward
-		Ray ray = new Ray(transform.position, transform.forward);
-		//Create a RaycastHit variable which will store information about the raycast
-		RaycastHit hit;
+        // 2. Visual Beam Logic
+        Ray ray = new Ray(transform.position, fireDirection);
+        RaycastHit hit;
 
-		//If our raycast hits an object in the strikeable layer within range of the origin
-		if (Physics.Raycast(ray, out hit, range, strikeableMask))
-		{
-			//...move the lightning hit game object to the point of the hit...
-			plushizeHit.transform.position = hit.point;
-			//...and play the effect...
-			plushizeHit.Play();
-			//...then set the end point of the lightning bolt..
-			plushizeBeam.EndPoint = hit.point;
-			//...then try to get a reference to an EnemyHealth script...
-			ZombieHealth zombieHealth = hit.collider.GetComponent<ZombieHealth>();
-			//...if the script exists...
-			if (zombieHealth != null)
-			{
-				//...tell the zombie to improve health
-				zombieHealth.ImproveHealth(this.name);
-			}
-		}
-		//Otherwise, if our raycast doesn't hit anything...
-		else
-		{
-			//...place the end of the bolt at maximum range
-			plushizeBeam.EndPoint = ray.GetPoint(range);
-		}
-		//Turn the lightning bolt game object on
-		plushizeBeam.gameObject.SetActive(true);
-	}
+        if (Physics.Raycast(ray, out hit, range, strikeableMask))
+        {
+            // Set the visual beam to end where the ray hits an object
+            plushizeHit.transform.position = hit.point;
+            plushizeBeam.EndPoint = hit.point;
+            
+            // Play the impact AV (audio/visual)
+            plushizeHit.Play();
+        }
+        else
+        {
+            // If the ray hits nothing, the visual beam goes to max range
+            plushizeBeam.EndPoint = maxRangePoint;
+            
+            // Note: We don't call plushizeHit.Play() here because there is no impact point
+        }
+
+        // 3. Spray Logic (The actual "Infection Killer")
+        // We trigger the particles. The collision logic we wrote previously 
+        // on the Infection object will handle the "load decrease."
+        if (plushizeParticleSystem != null)
+        {
+            if (!plushizeParticleSystem.isEmitting)
+            {
+                plushizeParticleSystem.Play();
+            }
+        }
+
+        // Ensure the beam object is visible
+        if (plushizeBeam != null)
+        {
+            plushizeBeam.gameObject.SetActive(true);
+        }
+    }
+
+    // Optional: Stop the particles when not firing
+    public void StopFiring()
+    {
+        if (plushizeParticleSystem != null) plushizeParticleSystem.Stop();
+        if (plushizeBeam != null) plushizeBeam.gameObject.SetActive(false);
+    }
 }
-	

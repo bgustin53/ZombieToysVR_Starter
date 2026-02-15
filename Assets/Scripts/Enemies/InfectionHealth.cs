@@ -16,7 +16,7 @@ public class InfectionHealth : MonoBehaviour
     [SerializeField] private float startInfectionLoad = 100;                  //Infection load at start of game
     [SerializeField] private float currentInfectionLoad = 75;                 //Infection load at any given time 
     [SerializeField] private float infectionLoadIncreasePerRepeat = .03f ;    //How much load increases 
-    [SerializeField] private float infectionLoadDecreasePerCollision = .1f ;  //How much load increases
+    [SerializeField] private float infectionLoadDecreasePerCollision = .01f ;  //How much load decreases
     [SerializeField] private float infectionLoadRepeatRate = 2.0f;            //How often does the infection load increase
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -34,12 +34,10 @@ public class InfectionHealth : MonoBehaviour
         }
     }
 
-    // If the player has the Plushizer ray selected, then the infection is reduced by colliding into the Infection's particles
+    // 
     void OnParticleCollision(GameObject other)
     {
-        PlayerOrbOptions playerOrbOptions = other.GetComponent<PlayerOrbOptions>();
-
-        if(playerOrbOptions != null && playerOrbOptions.setToPlushizer)
+        if (other.CompareTag("PlushizerParticle") && GameManager.Instance.plushiesCured > 0)
             currentInfectionLoad -= infectionLoadDecreasePerCollision;
 
         if (currentInfectionLoad <= 0)

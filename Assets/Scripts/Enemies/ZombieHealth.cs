@@ -96,7 +96,7 @@ public class ZombieHealth : MonoBehaviour
 		transform.Translate(-Vector3.up * sinkSpeed * Time.deltaTime);
 	}
 
-	//This method is called by a VFX whenever the zombie is hit with a healing or plushizing beam
+	//This method is called whenever the zombie is hit with a healing or plushizing beam
 	public void ImproveHealth(string typeOfBeam)
     {
 		switch (typeOfBeam)
@@ -105,7 +105,8 @@ public class ZombieHealth : MonoBehaviour
 				ImproveHealth(GameManager.Instance.healingFromHealingBeam);
 				break;
 			case "Plushize_Indicator":
-				if (lastCycleOfLastZombieCured && GameManager.Instance.Infection == null)
+				// you can't prevent relapse if the boss (infection) is present
+				if (lastCycleOfLastZombieCured && GameManager.Instance.Infection == null)  
 				{
 					willRelapse = false;
 					ImproveHealth(999);  //Value irrevelent, this will plushize this zombie
@@ -147,6 +148,7 @@ public class ZombieHealth : MonoBehaviour
 					{
 						lastZombieIndicator.Play();
 						lastCycleOfLastZombieCured = true;
+						GameManager.Instance.plushiesCured++;
 					}
 					else 
 					{
@@ -231,6 +233,7 @@ public class ZombieHealth : MonoBehaviour
 		currentCycle = 0;
 		isCured = false;
 		lastCycleOfLastZombieCured = false;
+		GameManager.Instance.plushiesCured--;
 
 		//Reset all this type zombie to not cured
 		Spawner.Relapse();
