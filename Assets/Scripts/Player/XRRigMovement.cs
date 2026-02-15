@@ -59,15 +59,20 @@ public class XRRigMovement : MonoBehaviour
 
         Vector3 direction = (forward * input.y + right * input.x).normalized;
         Vector3 horizontalVelocity = direction * speed;
-        float verticalSpeed;   // Holds gravity, but only if the player is above the ground.
+        float verticalSpeed = 0f;   // Holds gravity, but only if the player is above the ground.
 
         // Handle vertical speed
         if (transform.position.y > yPos)
         {
             verticalSpeed = gravity;
         }
-        else
+
+        // Keep player on surface
+       if (transform.position.y < yPos)
         {
+            characterController.enabled = false;
+            transform.position = new Vector3(transform.position.x, yPos, transform.position.z);
+            characterController.enabled = true;
             verticalSpeed = 0f;
         }
 

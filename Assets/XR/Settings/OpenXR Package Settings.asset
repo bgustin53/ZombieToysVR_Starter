@@ -1424,7 +1424,7 @@ MonoBehaviour:
   m_Name: WebGL
   m_EditorClassIdentifier: 
   features:
-  - {fileID: 5483697352806179994}
+  - {fileID: 585547815787324167}
   customLoaderName: 
   m_renderMode: 1
   m_latencyOptimization: 0
