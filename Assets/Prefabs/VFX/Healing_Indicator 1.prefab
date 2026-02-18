@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2967118519576003245}
   - component: {fileID: 5129925057496773348}
   m_Layer: 0
-  m_Name: Healing_Indicator
+  m_Name: Healing_Indicator 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
