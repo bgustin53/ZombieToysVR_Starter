@@ -44,7 +44,7 @@ public class InfectionHealth : MonoBehaviour
         {
             Debug.Log("Infection Cleared!");
             CancelInvoke(nameof(IncreaseInfectionLoad));
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

@@ -52,7 +52,6 @@ public class ZombieHealth : MonoBehaviour
 	private bool isSinking;											//Is the zombie currently sinking?
 	public bool headHome { get; private set; }					    //Heads home
 	public bool isCured;						 				    //Mark this clone cured
-	private bool willRelapse = true;                                //This occurs when the last shot at the zombie is not with the Plushizer
 	private bool lastCycleOfLastZombieCured;					    //Mark last zombie cured
 
 	//Reset() defines the default values for properties in the inspector
@@ -104,14 +103,6 @@ public class ZombieHealth : MonoBehaviour
 			case "Healing_Indicator":
 				ImproveHealth(GameManager.Instance.healingFromHealingBeam);
 				break;
-			case "Plushize_Indicator":
-				// you can't prevent relapse if the boss (infection) is present
-				if (lastCycleOfLastZombieCured && GameManager.Instance.Infection == null)  
-				{
-					willRelapse = false;
-					ImproveHealth(999);  //Value irrevelent, this will plushize this zombie
-				}
-				break;
 			case "HealingShroudDebuff":
 				ImproveHealth(GameManager.Instance.healingFromHealingShroud);
 				break;
@@ -141,7 +132,7 @@ public class ZombieHealth : MonoBehaviour
 			{
 				isCured = true;
 
-				// Only plushize if all zombies are cured
+				// Only plushize if all of this type zombie is cured
 				if (Spawner.lastCured)
 				{
 					if (!lastCycleOfLastZombieCured)
@@ -158,7 +149,7 @@ public class ZombieHealth : MonoBehaviour
 						//Stop playing particle effect
 						lastZombieIndicator.Stop();
 
-						if (willRelapse)
+						if (GameManager.Instance.Infection.activeInHierarchy)
 							StartCoroutine(RelapseZombies());
                     }
 				}
@@ -170,6 +161,7 @@ public class ZombieHealth : MonoBehaviour
 			else
 			{
 				// Regular respawn cycle
+				
 				RespawnNextCycle();
 			}
 		}
