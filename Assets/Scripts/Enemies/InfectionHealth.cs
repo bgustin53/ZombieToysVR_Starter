@@ -5,23 +5,24 @@
  * 
  * Author: Bruce Gustin
  * Date Written: Feb 1, 2026
- * Version 1.0
+ * Version 2.0
  *************************************************************************************************/
-using Unity.VisualScripting;
+
 using UnityEngine;
 
 public class InfectionHealth : MonoBehaviour
 {
-    [SerializeField] private float maxInfectionLoad = 250;                    //Maximum infection load
-    [SerializeField] private float startInfectionLoad = 100;                  //Infection load at start of game
-    [SerializeField] private float currentInfectionLoad = 75;                 //Infection load at any given time 
-    [SerializeField] private float infectionLoadIncreasePerRepeat = .03f ;    //How much load increases 
-    [SerializeField] private float infectionLoadDecreasePerCollision = .01f ;  //How much load decreases
-    [SerializeField] private float infectionLoadRepeatRate = 2.0f;            //How often does the infection load increase
+    public float maxInfectionLoad = 250;                    //Maximum infection load
+    public float startInfectionLoad = 75;                   //Infection load at start of game
+    public float currentInfectionLoad;                      //Infection load at any given time 
+    public float infectionLoadIncreasePerRepeat = .03f ;    //How much load increases 
+    public float infectionLoadDecreasePerCollision = .01f ;  //How much load decreases
+    public float infectionLoadRepeatRate = 0.25f;            //How often does the infection load increase
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        currentInfectionLoad = startInfectionLoad;
         InvokeRepeating("IncreaseInfectionLoad", 0, infectionLoadRepeatRate);
     }
 
@@ -31,20 +32,6 @@ public class InfectionHealth : MonoBehaviour
         if(currentInfectionLoad < maxInfectionLoad)
         {
             currentInfectionLoad += infectionLoadIncreasePerRepeat;
-        }
-    }
-
-    // 
-    void OnParticleCollision(GameObject other)
-    {
-        if (other.CompareTag("PlushizerParticle") && GameManager.Instance.plushiesCured > 0)
-            currentInfectionLoad -= infectionLoadDecreasePerCollision;
-
-        if (currentInfectionLoad <= 0)
-        {
-            Debug.Log("Infection Cleared!");
-            CancelInvoke(nameof(IncreaseInfectionLoad));
-            gameObject.SetActive(false);
         }
     }
 }
