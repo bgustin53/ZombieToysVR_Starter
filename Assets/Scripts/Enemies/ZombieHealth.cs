@@ -8,7 +8,7 @@
  * 
  * Author: Bruce Gustin
  * Date Written: July 8, 2025
- * Version 1.1 - Fixed VR movement direction
+ * Version 1.2 - Fixed VR movement direction
  *************************************************************************************************/
 
 
@@ -95,7 +95,7 @@ public class ZombieHealth : MonoBehaviour
 		transform.Translate(-Vector3.up * sinkSpeed * Time.deltaTime);
 	}
 
-	//This method is called whenever the zombie is hit with a healing or plushizing beam
+	//This method is called whenever the zombie is hit with a healing beam
 	public void ImproveHealth(string typeOfBeam)
     {
 		switch (typeOfBeam)
@@ -139,12 +139,14 @@ public class ZombieHealth : MonoBehaviour
 					{
 						lastZombieIndicator.Play();
 						lastCycleOfLastZombieCured = true;
-						GameManager.Instance.plushiesCured++;
 					}
 					else 
 					{
 						//Set new NavMesh Agent destination
 						headHome = true;
+
+						// This allows you to start curing the infection
+						GameManager.Instance.plushiesCured++;    // Depreciated feature
 
 						//Stop playing particle effect
 						lastZombieIndicator.Stop();
@@ -214,6 +216,7 @@ public class ZombieHealth : MonoBehaviour
 		isSinking = true;
 	}
 
+	// This converts the plushy back to a zombie after a relapse time
 	IEnumerator RelapseZombies()
     {
 		//Wait then head back to target
@@ -225,7 +228,7 @@ public class ZombieHealth : MonoBehaviour
 		currentCycle = 0;
 		isCured = false;
 		lastCycleOfLastZombieCured = false;
-		GameManager.Instance.plushiesCured--;
+		GameManager.Instance.plushiesCured--;  // Depreciated feature
 
 		//Reset all this type zombie to not cured
 		Spawner.Relapse();

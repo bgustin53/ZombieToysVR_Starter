@@ -6,7 +6,7 @@
  * 
  * Author: Bruce Gustin
  * Date Written: July 8, 2025
- * Version 1.1 
+ * Version 1.2 
  *****************************************************************/
 //This script keeps 
 
@@ -45,9 +45,10 @@ public class PlayerHealth : MonoBehaviour
 	// These are all fields of the health indicator
 	private float startIndicatorRatio = 1.0f;           //This is for the orb health indicator
 	private float endIndicatorRatio = 1.0f;             //This is for the orb health indicator
-	private float rateOfIndicatorRatio = 0.001f;        //The speed at which the indicator morphs
+	private float rateOfIndicatorRatio = 0.001f;         //The speed at which the indicator morphs
+	private Material cachedMaterial;
 
-	//Reset() defines the default values for properties in the inspector
+	//Reset() defines the default values for properties in the inspector. Not part of Play or Build
 	void Reset ()
 	{
 		//Grab a reference to the needed components
@@ -62,6 +63,9 @@ public class PlayerHealth : MonoBehaviour
 	{
 		//Set the player's health
 		currentHealth = maxHealth;
+		
+		// Grabs color reference for orb
+		cachedMaterial = meshRenderer.materials[0]; 
 	}
 
 	//This method allows the zombies to assign damage to the player
@@ -113,32 +117,43 @@ public class PlayerHealth : MonoBehaviour
 			audioSource.Play();
 	}
 
+	//This method add health to the player.  It is called by the Food Bowl collider on collision
 	public void AddHealth()
     {
+		// Create a start ratio for the morphing
+		startIndicatorRatio = (currentHealth * 1.0f) / maxHealth;
+
 		//Player adds half of max health to current health
 		currentHealth += maxHealth / 2;
 
 		//Prevents health from exceeding maximum health
 		currentHealth = Mathf.Min(currentHealth, maxHealth);
 
+		// Create an end ratio for the morphing
+		endIndicatorRatio = (currentHealth * 1.0f) / maxHealth;
+		
 		DisplayHealthIndicator();
 	}
 
+	// Displays UI so that player can see health status
 	private void DisplayHealthIndicator()
 	{
-		/*
-		if (startIndicatorRatio < healthNotification / 100)
-        {
-			criticalHealth.SetActive(true);
-		}
-        else
-        {
-			criticalHealth.SetActive(false);
+		// Shows an extra UI when health reach a low level
+		if(criticalHealth !=null)
+			{
+			if (startIndicatorRatio < healthNotification / 100)
+			{
+				criticalHealth.SetActive(true);
+			}
+			else
+			{
+				criticalHealth.SetActive(false);
 
-		}
-			*/
+			}
+		}	
 
 		// Morph Health Indicator slowly from start indicator to end indicator
+		CancelInvoke("MorphDisplayHealthIndicator");  // stop any existing morph
 		InvokeRepeating("MorphDisplayHealthIndicator", 0, rateOfIndicatorRatio);
 	}
 
@@ -158,6 +173,7 @@ public class PlayerHealth : MonoBehaviour
 			GameManager.Instance.PlayerDeathComplete();
 	}
 
+	// Behavior so that the orb color moves slowly from Green to Red as health deteriorates and vice-versa
 	private void MorphDisplayHealthIndicator()
 	{
 		// Normalize health to 0-1 range
@@ -165,9 +181,9 @@ public class PlayerHealth : MonoBehaviour
 
 		// Calculate red and green components with power curves for better visual perception
 		// Use power curve to make red appear earlier and more prominently
-		float red = Mathf.Pow(1f - healthLossRatio, 0.5f);   // More red when health is low (squared for emphasis)
+		float red = Mathf.Pow(1f - healthLossRatio, 0.5f); // More red when health is low (square root for gradual fade)
 														   // Use power curve to make green fade faster as health decreases
-		float green = Mathf.Pow(healthLossRatio, 2f);    // More green when health is high (square root for gradual fade)
+		float green = Mathf.Pow(healthLossRatio, 2f);      // More green when health is high (rooted for emphasis)
 
 		// Create base color
 		Color baseColor = new Color(red, green, 0f, 1f);
@@ -177,16 +193,15 @@ public class PlayerHealth : MonoBehaviour
 		Color emissionColor = baseColor * emissionIntensity;
 
 		// Apply the emission color to the material
-		Material material = meshRenderer.materials[0];
-		material.SetColor("_EmissionColor", emissionColor);
+		cachedMaterial.SetColor("_EmissionColor", emissionColor);
 
 		// Make sure emission is enabled
-		material.EnableKeyword("_EMISSION");
+		cachedMaterial.EnableKeyword("_EMISSION");
 
 		// Start morphing
 		startIndicatorRatio += (endIndicatorRatio - startIndicatorRatio) * rateOfIndicatorRatio;
-		if (startIndicatorRatio <= endIndicatorRatio)
-			CancelInvoke();
+		if (Mathf.Abs(startIndicatorRatio - endIndicatorRatio) < 0.001f)
+    		CancelInvoke("MorphDisplayHealthIndicator");
 	}
 
 }
