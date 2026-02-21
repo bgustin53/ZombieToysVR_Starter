@@ -7,8 +7,7 @@
  * Date Written: Feb 1, 2026
  * Version 1.0
  *************************************************************************************************/
-using System.Linq.Expressions;
-using Unity.VisualScripting;
+
 using UnityEngine;
 
 public class InfectionHealth : MonoBehaviour
@@ -17,7 +16,7 @@ public class InfectionHealth : MonoBehaviour
     [SerializeField] private float maxInfectionLoad = 1000;                   //Maximum infection load
     [SerializeField] private float startInfectionLoad = 300;                  //Infection load at start of game
     [SerializeField] private float infectionLoadIncreasePerRepeat = .12f ;    //How much load increases 
-    [SerializeField] private float infectionLoadDecreasePerCollision = .04f ; //How much load decreases
+    [SerializeField] private float infectionLoadDecreasePerCollision = .2f ;  //How much load decreases
     private float currentInfectionLoad;                                       //Infection load at any given time 
     private float infectionLoadRepeatRate = 0.25f;                            //How often does the infection load increase
     private ParticleSystem infectionParticles;
@@ -37,7 +36,7 @@ public class InfectionHealth : MonoBehaviour
     // Keep the infection above the player
     void Update()
     {
-        transform.position = new Vector3(player.position.x, 10, player.position.z);
+        transform.position = player.position + Vector3.up * 6;
     }
 
     // Infection load grows until max over time

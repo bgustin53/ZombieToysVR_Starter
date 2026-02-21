@@ -146,13 +146,14 @@ public class ZombieHealth : MonoBehaviour
 						headHome = true;
 
 						// This allows you to start curing the infection
-						GameManager.Instance.plushiesCured++;    // Depreciated feature
 
 						//Stop playing particle effect
 						lastZombieIndicator.Stop();
 
-						if (GameManager.Instance.Infection.activeInHierarchy)
+						if (GameManager.Instance.Infection?.activeInHierarchy != false)
+						{
 							StartCoroutine(RelapseZombies());
+						}
                     }
 				}
 				else
@@ -228,7 +229,6 @@ public class ZombieHealth : MonoBehaviour
 		currentCycle = 0;
 		isCured = false;
 		lastCycleOfLastZombieCured = false;
-		GameManager.Instance.plushiesCured--;  // Depreciated feature
 
 		//Reset all this type zombie to not cured
 		Spawner.Relapse();
